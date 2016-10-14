@@ -35,5 +35,36 @@ export default {
             console.log('cant serialize parameter not an object');
             return false;
         }
+    },
+
+    /**
+     * hides a html element
+     *
+     * @param el
+     */
+    hide: function(el) {
+        el.style.display = 'none';
+    },
+
+    /**
+     * Shows a hidden html element
+     *
+     * @param el
+     * @param value
+     */
+    show: function(el, value) {
+        el.style.display = value;
+    },
+
+    /**
+     * Toggles display of a html element
+     *
+     * @param el
+     * @param value
+     */
+    toggle:function(el, value) {
+        var display = (window.getComputedStyle ? getComputedStyle(el, null) : el.currentStyle).display;
+        if (display == 'none') el.style.display = value;
+        else el.style.display = 'none';
     }
 }
