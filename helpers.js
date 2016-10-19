@@ -1,5 +1,6 @@
 /**
  * EMCA6 Babel Helpers to do the everyday stuff you do jQuery in pure Javascript
+ * @author James Kirkby <jkirkby91@gmail.com>
  */
 export default {
 
@@ -32,7 +33,7 @@ export default {
      * @param obj
      * @returns {boolean}
      */
-    jsonEncodeObject: function(obj)
+    jsonEncodeObj: function(obj)
     {
         if(obj instanceof Object) {
             return JSON.stringify(obj);
@@ -227,4 +228,56 @@ export default {
         }
         return -1;
     },
+
+    /**
+     * Gets the type of http request from the form
+     */
+    getRequestType: function () {
+        var method = this.el.querySelector('input[name="_method"]');
+        return (method ? method.value : this.el.method).toLowerCase();
+    },
+
+    /**
+     * Send an ajax $_GET request
+     * Identical to jQuery $.get()
+     *
+     * @param url
+     * @param success
+     * @returns {*}
+     */
+    getAjax: function (url, success) {
+        var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+        xhr.open('GET', url);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState>3 && xhr.status==200) success(xhr.responseText);
+        };
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.send();
+        return xhr;
+    },
+
+    /**
+     * Send an Ajax $_POST request
+     * Identical to jQuery $.post()
+     *
+     * @param url
+     * @param data
+     * @param success
+     * @returns {*}
+     */
+    postAjax: function (url, data, success) {
+        var params = typeof data == 'string' ? data : Object.keys(data).map(
+            function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+        ).join('&');
+
+        var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+        xhr.open('POST', url);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText); }
+        };
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(params);
+        return xhr;
+    }
 }
